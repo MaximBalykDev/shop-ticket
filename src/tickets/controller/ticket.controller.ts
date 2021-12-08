@@ -17,7 +17,6 @@ export class TicketsController {
         return this.ticketsService.getBoughtTicketsList();
     }
 
-
     @Post('buy')
     buyTicket(@Body() data: { token: string, amount: number, id: string }): Promise<any> {
         return this.ticketsService.buyTicket(data.token, data.amount, data.id);
