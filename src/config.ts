@@ -1,1 +1,2 @@
-export const SK = 'sk_test_51K2WhCFyWxzlg6TWyinssvJi9aqUyPZqo6yEZG2MdveynnmE52UeSths0BH5jFHlBYi8JFq7tahexSto0CWOAq6L00SJEkbsRC'
+export const SK =
+  'sk_test_51K2WhCFyWxzlg6TWyinssvJi9aqUyPZqo6yEZG2MdveynnmE52UeSths0BH5jFHlBYi8JFq7tahexSto0CWOAq6L00SJEkbsRC';
