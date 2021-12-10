@@ -1,27 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import * as Stripe from 'stripe';
-
+import { Stripe } from 'stripe';
 import { InjectModel } from '@nestjs/mongoose';
+
 import { Tickets, TicketsDocument } from '../schemas/ticket.shema';
 import {
   TicketsBoughtList,
   TicketsBoughtListDocument,
 } from '../schemas/ticket.Boughtlist.schema';
-import { SK } from '../../config';
+import { InjectStripe } from 'nestjs-stripe';
 
 @Injectable()
 export class TicketsService {
-  // @ts-ignore
-  private stripe: Stripe = new Stripe(SK, {
-    apiVersion: '2020-08-27',
-  });
-
   constructor(
     @InjectModel(Tickets.name)
     private ticketsModel: Model<TicketsDocument>,
     @InjectModel(TicketsBoughtList.name)
     private ticketsBoughtListModel: Model<TicketsBoughtListDocument>,
+    @InjectStripe() private readonly stripeClient: Stripe,
   ) {}
 
   getTicketsList(): Promise<any> {
@@ -32,29 +28,33 @@ export class TicketsService {
     return this.ticketsBoughtListModel.find().exec();
   }
 
-  buyTicket(token: string, amount: number, id: string): Promise<any> {
-    return new Promise<any>((resolve) => {
-      this.stripe.charges.create(
+  public async buyTicket(token: string, amount: number, id: string) {
+    const session = await this.stripeClient.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
         {
-          amount: amount,
-          currency: 'USD',
-          description: 'Ticket payment',
-          source: token,
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: 'name',
+            },
+            unit_amount: amount * 100,
+          },
+          quantity: 1,
         },
-        (err) => {
-          if (err) {
-            resolve({ success: false, status: err.raw.message });
-          } else {
-            this.ticketsBoughtListModel.create({
-              token,
-              price: amount,
-              date: new Date().getTime(),
-              id: id,
-            });
-            resolve({ success: true, status: 'Payment Successful' });
-          }
-        },
-      );
+      ],
+      mode: 'payment',
+      success_url: 'http://localhost:4200/',
+      cancel_url: 'http://localhost:4200/',
     });
+
+    await this.ticketsBoughtListModel.create({
+      token,
+      price: amount,
+      date: new Date().getTime(),
+      id: id,
+    });
+
+    return { id: (session as unknown as { id: string }).id };
   }
 }
