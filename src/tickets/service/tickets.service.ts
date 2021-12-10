@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Stripe } from 'stripe';
 import { InjectModel } from '@nestjs/mongoose';
+import { InjectStripe } from 'nestjs-stripe';
 
 import { Tickets, TicketsDocument } from '../schemas/ticket.shema';
 import {
   TicketsBoughtList,
   TicketsBoughtListDocument,
 } from '../schemas/ticket.Boughtlist.schema';
-import { InjectStripe } from 'nestjs-stripe';
 
 @Injectable()
 export class TicketsService {

@@ -5,11 +5,11 @@ import { TicketsModule } from './tickets/tickets.module';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 
-const uri =
+const url =
   'mongodb+srv://admin:ctrezzwVdRG9MLbQ@cluster0.b0u8v.mongodb.net/ticketsDB?retryWrites=true&w=majority';
 
 @Module({
-  imports: [TicketsModule, MongooseModule.forRoot(uri)],
+  imports: [TicketsModule, MongooseModule.forRoot(url)],
   controllers: [AppController],
   providers: [AppService],
 })
