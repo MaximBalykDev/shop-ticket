@@ -1,22 +1,24 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { HydratedDocument } from 'mongoose';
 
 import { TicketsService } from '../service/tickets.service';
-import {
-  PaymentInterface,
-  TicketInterface,
-} from '../interfaces/ticket.interface';
+import { PaymentInterface } from '../interfaces/ticket.interface';
+import { TicketsDocument } from '../schemas/ticket.shema';
+import { TicketsBoughtListDocument } from '../schemas/ticket.Boughtlist.schema';
 
 @Controller('tickets')
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
 
   @Get()
-  getTicketsList(): Promise<TicketInterface[]> {
+  getTicketsList(): Promise<Array<HydratedDocument<TicketsDocument>>> {
     return this.ticketsService.getTicketsList();
   }
 
   @Get('all')
-  getBoughtTicketsList(): Promise<TicketInterface[]> {
+  getBoughtTicketsList(): Promise<
+    Array<HydratedDocument<TicketsBoughtListDocument>>
+  > {
     return this.ticketsService.getBoughtTicketsList();
   }
 

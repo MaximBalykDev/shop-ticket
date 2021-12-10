@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { HydratedDocument, Model } from 'mongoose';
 import { Stripe } from 'stripe';
 import { InjectModel } from '@nestjs/mongoose';
 import { InjectStripe } from 'nestjs-stripe';
@@ -20,11 +20,13 @@ export class TicketsService {
     @InjectStripe() private readonly stripeClient: Stripe,
   ) {}
 
-  getTicketsList(): Promise<any> {
+  getTicketsList(): Promise<Array<HydratedDocument<TicketsDocument>>> {
     return this.ticketsModel.find().exec();
   }
 
-  getBoughtTicketsList(): Promise<any> {
+  getBoughtTicketsList(): Promise<
+    Array<HydratedDocument<TicketsBoughtListDocument>>
+  > {
     return this.ticketsBoughtListModel.find().exec();
   }
 
